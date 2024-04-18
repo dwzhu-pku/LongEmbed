@@ -1,4 +1,17 @@
-# LongEmbed: Extending Embedding Models for Long Context Retrieval
+<!-- # LongEmbed: Extending Embedding Models for Long Context Retrieval -->
+# <div align="center">LongEmbed</div>
+##  <div align="center">Extending Embedding Models for Long Context Retrieval</div>
+
+<div align="center">Dawei Zhu, Liang Wang, Nan Yang, Yifan Song, Wenhao Wu, Furu Wei, Sujian Li
+<br><br>
+
+[Please see full details in our pre-print](assets/LongEmbed_v0417.pdf)
+</div> 
+<div align="center">
+<a href=""><img src="assets/paper-page-xl.svg" alt="Paper page on HF"></a>
+<a href="https://huggingface.co/datasets/dwzhu/LongEmbed"><img src="assets/dataset-on-hf-xl.svg" alt="Dataset on HF"></a>
+<a href="https://huggingface.co/dwzhu/e5rope-base"><img src="assets/dataset-on-hf-xl.svg" alt="Model on HF"></a>
+</div>
 
 This repository is the official implementation for the paper "LongEmbed: Extending Embedding Models for Long Context Retrieval"
 
@@ -10,10 +23,12 @@ This paper explores context window extension of existing embedding models, pushi
 
 To facilitate future research in long context embedding models, we release E5-Base-4k and E5-RoPE-Base. E5-Base-4k is further fine-tuned on E5-Base to support 4k context, while strictly preserving original behavior for inputs not exceeding 512 tokens. E5-RoPE-Base follows the same training procedure as E5-Base, except for the substitution of APE with RoPE. It is released to facilitate comparison between APE \& RoPE-Based embedding models.
 
-| Model | Download Link |
+| Model | Link |
 | --- | --- |
-| E5-Base-4k | Will be available before 20th April |
-| E5-RoPE-Base | Will be available before 20th April |
+| E5-Base-4k | [Download Link](https://huggingface.co/dwzhu/e5-base-4k) |
+| E5-RoPE-Base | [Download Link](https://huggingface.co/dwzhu/e5rope-base) |
+
+Note that E5-Base-4k simply expands the position embedding matrix to allow for 4,096 position ids. The embedding vectors for the original pids {0,1,2,...,511} is mapped to represent {0,8,16,...,4088}. Embedding vectors for other pids are trained. So for inputs not exceeding 512 tokens, please multiply the position ids by 8 to maintain the original behavior. 
 
 ## 🔍 Overview of LongEmbed
 
