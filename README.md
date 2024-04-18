@@ -10,7 +10,7 @@
 <div align="center">
 <a href=""><img src="assets/paper-page-xl.svg" alt="Paper page on HF"></a>
 <a href="https://huggingface.co/datasets/dwzhu/LongEmbed"><img src="assets/dataset-on-hf-xl.svg" alt="Dataset on HF"></a>
-<a href="https://huggingface.co/dwzhu/e5rope-base"><img src="assets/dataset-on-hf-xl.svg" alt="Model on HF"></a>
+<a href="https://huggingface.co/dwzhu/e5rope-base"><img src="assets/model-on-hf-xl.svg" alt="Model on HF"></a>
 </div>
 
 This repository is the official implementation for the paper "LongEmbed: Extending Embedding Models for Long Context Retrieval"
