@@ -148,7 +148,7 @@ class RetrievalModel(DRESModel):
         for start_idx in tqdm(range(0, len(input_texts), batch_size), desc='encoding', mininterval=10):
             batch_input_texts: List[str] = input_texts[start_idx: start_idx + batch_size]
 
-            batch_dict = create_batch_dict(self.tokenizer, batch_input_texts, always_add_eos=(self.pool_type == 'last'), use_m2_bert=("m2-bert" in self.model_name_or_path), max_length=self.encode_max_length)
+            batch_dict = create_batch_dict(self.tokenizer, batch_input_texts, always_add_eos=(self.pool_type == 'last'), max_length=self.encode_max_length)
             if self.pos_mode != 'original':
                 max_positions = 4096 if 'mistral' in self.encoder.config.model_type else 512
                 batch_dict['position_ids'] = get_position_ids(batch_dict['input_ids'], mode=self.pos_mode, max_original_positions=max_positions, encode_max_length=self.encode_max_length)

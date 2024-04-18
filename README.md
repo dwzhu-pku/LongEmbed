@@ -65,7 +65,6 @@ git clone https://github.com/dwzhu-pku/LongEmbed.git
 cd LongEmbed
 pip install -r requirements.txt
 ```
-Note that we are still working on the integration of LongEmbed to MTEB. So for now, please manually add the `src/LEMB*` files to the `MTEB/mteb/tasks/Retrieval/eng/` folder and update the `MTEB/mteb/tasks/Retrieval/__init__.py` file accordingly. (please install MTEB in editable mode)
 
 ### Loading Data
 LongEmbed contains six datasets: NarrativeQA, QMSum, 2WikiMultihopQA, SummScreenFD, Passkey, and Needle. Each dataset has three splits: corpus, queries, and qrels. The `corpus.jsonl` file contains the documents, the `queries.jsonl` file contains the queries, and the `qrels.jsonl` file describes the relevance. To spefic split of load each dataset, you may use:
@@ -82,32 +81,35 @@ data_list = load_dataset(path="dwzhu/LongEmbed", name="dataset_name", split="spl
 The evaluation of LongEmbed can be easily conducted using MTEB. For the four real tasks, you can evaluate as follows:
 
 ```python
-from tabulate import tabulate
 from mteb import MTEB
 retrieval_task_list = ["LEMBSummScreenFDRetrieval", "LEMBQMSumRetrieval","LEMBWikimQARetrieval","LEMBNarrativeQARetrieval"]
-retrieval_task_results = []
+output_dict = {}
 evaluation = MTEB(tasks=retrieval_task_list)
+#TODO load the model before evaluation
 results = evaluation.run(model,output_folder=args.output_dir, overwrite_results=True, batch_size=args.batch_size,verbosity=0)
 for key, value in results.items():
 	split = "test" if "test" in value else "validation"
-	retrieval_task_results.append([key, value[split]["ndcg_at_1"], value[split]["ndcg_at_10"]])
 	output_dict[key] = {"ndcg@1": value[split]["ndcg_at_1"], "ndcg@10": value[split]["ndcg_at_10"]}
-print(tabulate(retrieval_task_results, headers=["Task", "NDCG@1", "NDCG@10"]))
+print(output_dict)
 ```
 
-For the two synthetic tasks, since we examine a broad context range of $ \{0.25,0.5,1,2,4,8,16,32\}\times1024 $ tokens, an additional parameter of `context_length` is required. You may evaluate as follows:
+For the two synthetic tasks, we examine a broad context range of {256, 512, 1024, 2048, 4096, 8192, 16384, 32768} tokens. You may evaluate as follows:
 
 ```python
-from tabulate import tabulate
 from mteb import MTEB
-needle_passkey_score_list = []
-for ctx_len in [256, 512, 1024, 2048, 4096, 8192, 16384, 32768]:
-	print(f"Running task: NeedlesRetrieval, PasskeyRetrieval, context length: {ctx_len}")
-	evaluation = MTEB(tasks=["LEMBNeedleRetrieval", "LEMBPasskeyRetrieval"])
-	results = evaluation.run(model, context_length=ctx_len,overwrite_results=True,batch_size=args.batch_size)
-	needle_passkey_score_list.append([ctx_len, results["LEMBNeedleRetrieval"]["test"]["ndcg_at_1"], results["LEMBPasskeyRetrieval"]["test"]["ndcg_at_1"]])
-needle_passkey_score_list.append(["avg", sum([x[1] for x in needle_passkey_score_list])/len(context_length_list), sum([x[2] for x in needle_passkey_score_list])/len(context_length_list)])
-print(tabulate(needle_passkey_score_list, headers=["Context Length", "Needle-ACC", "Passkey-ACC"]))
+needle_passkey_task_list = ["LEMBNeedleRetrieval", "LEMBPasskeyRetrieval"]
+output_dict = {}
+context_length_list = [256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+evaluation = MTEB(tasks=needle_passkey_task_list)
+#TODO load the model before evaluation
+results = evaluation.run(model, output_folder=args.output_dir, overwrite_results=True,batch_size=args.batch_size,verbosity=0)
+for key, value in results.items():
+	needle_passkey_score_list = []
+	for ctx_len in context_length_list:
+		needle_passkey_score_list.append([ctx_len, value[f"test_{ctx_len}"]["ndcg_at_1"]])
+	needle_passkey_score_list.append(["avg", sum([x[1] for x in needle_passkey_score_list])/len(context_length_list)])
+	output_dict[key] = {item[0]: item[1] for item in needle_passkey_score_list}
+print(output_dict)
 ```
 
 Our code snippet for evaluation can be found in `src/test_long_embed.py`. You may refer to the scripts in `scripts/run_long_embed.sh` to reproduce the results.

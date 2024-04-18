@@ -1,9 +1,7 @@
 import os
 import json
-import argparse
 import logging
 
-from tabulate import tabulate
 from mteb import MTEB
 
 from utils import logger, get_detailed_instruct, get_task_def_by_task_name_and_type, get_args
@@ -19,7 +17,6 @@ def main():
     retrieval_task_list = []
     needle_passkey_task_list = []
     output_dict = dict()
-    retrieval_task_results = list()
     needle_passkey_score_list = list()
 
     for task in ["LEMBSummScreenFDRetrieval", "LEMBQMSumRetrieval","LEMBWikimQARetrieval","LEMBNarrativeQARetrieval"]:
@@ -36,18 +33,14 @@ def main():
         context_length_list = list(args.window_length_list)
         context_length_list.sort()
 
-        for ctx_len in context_length_list:
-            print(f"Running task: NeedlesRetrieval, PasskeyRetrieval, context length: {ctx_len}")
-            evaluation = MTEB(tasks=["LEMBNeedleRetrieval", "LEMBPasskeyRetrieval"])
-            results = evaluation.run(model, context_length=ctx_len,overwrite_results=True,batch_size=args.batch_size)
-            needle_passkey_score_list.append([ctx_len, results["LEMBNeedleRetrieval"]["test"]["ndcg_at_1"], results["LEMBPasskeyRetrieval"]["test"]["ndcg_at_1"]])
-
-        needle_passkey_score_list.append(["avg", sum([x[1] for x in needle_passkey_score_list])/len(context_length_list), sum([x[2] for x in needle_passkey_score_list])/len(context_length_list)])
-
-        output_dict["needle"] = {item[0]: item[1] for item in needle_passkey_score_list}
-        output_dict["passkey"] = {item[0]: item[2] for item in needle_passkey_score_list}
-
-        print(tabulate(needle_passkey_score_list, headers=["Context Length", "Needle-ACC", "Passkey-ACC"]))
+        evaluation = MTEB(tasks=needle_passkey_task_list)
+        results = evaluation.run(model, output_folder=args.output_dir, overwrite_results=True,batch_size=args.batch_size,verbosity=0)
+        for key, value in results.items():
+            needle_passkey_score_list = []
+            for ctx_len in context_length_list:
+                needle_passkey_score_list.append([ctx_len, value[f"test_{ctx_len}"]["ndcg_at_1"]])
+            needle_passkey_score_list.append(["avg", sum([x[1] for x in needle_passkey_score_list])/len(context_length_list)])
+            output_dict[key] = {item[0]: item[1] for item in needle_passkey_score_list}
 
     # evaluating retrieval tasks
     if retrieval_task_list != []:
@@ -57,14 +50,9 @@ def main():
 
         for key, value in results.items():
             split = "test" if "test" in value else "validation"
-            retrieval_task_results.append([key, value[split]["ndcg_at_1"], value[split]["ndcg_at_10"]])
             output_dict[key] = {"ndcg@1": value[split]["ndcg_at_1"], "ndcg@10": value[split]["ndcg_at_10"]}
         
-        print(tabulate(retrieval_task_results, headers=["Task", "NDCG@1", "NDCG@10"]))
-        
-        if needle_passkey_score_list != []:
-            print(tabulate(needle_passkey_score_list, headers=["Context Length", "Needle-ACC", "Passkey-ACC"]))
-
+    print(output_dict)
     # set output file name
     output_file_name: str = os.path.basename(os.path.normpath(args.model_name_or_path))
     
@@ -81,8 +69,6 @@ def main():
         output_file_name += "_se"
     if args.rope_theta != 10000:
         output_file_name += f"_theta{args.rope_theta}"
-    if args.rearrange_pids:
-        output_file_name += "_rearrange"
     
     output_file_name += '.json'
     if len(args.task_list) >= 6:

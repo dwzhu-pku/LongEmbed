@@ -9,8 +9,8 @@ if [[ $# -ge 3 ]]; then
 fi
 
 # task_list=("LEMBSummScreenFDRetrieval" "LEMBQMSumRetrieval" "LEMBWikimQARetrieval" "LEMBNarrativeQARetrieval")
-# task_list=("LEMBNarrativeQARetrieval")
-task_list=("LEMBSummScreenFDRetrieval" "LEMBQMSumRetrieval" "LEMBWikimQARetrieval" "LEMBNarrativeQARetrieval" "LEMBNeedlesRetrieval", "LEMBPasskeyRetrieval")
+# task_list=("LEMBNeedleRetrieval" "LEMBPasskeyRetrieval")
+task_list=("LEMBSummScreenFDRetrieval" "LEMBQMSumRetrieval" "LEMBWikimQARetrieval" "LEMBNarrativeQARetrieval" "LEMBNeedleRetrieval" "LEMBPasskeyRetrieval")
 
 export CHUNKING_MODE="no_chunk"
 export CUDA_VISIBLE_DEVICES=1

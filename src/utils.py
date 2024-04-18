@@ -77,16 +77,7 @@ def pool(last_hidden_states: Tensor,
     return emb
 
 
-def create_batch_dict(tokenizer: PreTrainedTokenizerFast, input_texts: List[str], always_add_eos: bool, max_length: int = 512, use_m2_bert: bool = False) -> BatchEncoding:
-    if use_m2_bert:
-        return tokenizer(
-            input_texts,
-            max_length=max_length,
-            padding="max_length",
-            return_token_type_ids=False,
-            truncation=True,
-            return_tensors="pt",
-        )
+def create_batch_dict(tokenizer: PreTrainedTokenizerFast, input_texts: List[str], always_add_eos: bool, max_length: int = 512) -> BatchEncoding:
     
     if not always_add_eos:
         return tokenizer(
@@ -303,7 +294,7 @@ def get_args(input_args: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--prefix_type', type=str, default='query_or_passage', help='prefix type')
     parser.add_argument('--dataset_name_or_path', type=str, default=None)
     parser.add_argument("--chunk_mode", type=str, default="token", help="word / token")
-    parser.add_argument('--task_list', type=str, nargs='+', default=["LEMBSummScreenFDRetrieval", "LEMBQMSumRetrieval","LEMBWikimQARetrieval","LEMBNarrativeQARetrieval","LEMBNeedlesRetrieval", "LEMBPasskeyRetrieval"])
+    parser.add_argument('--task_list', type=str, nargs='+', default=["LEMBSummScreenFDRetrieval", "LEMBQMSumRetrieval","LEMBWikimQARetrieval","LEMBNarrativeQARetrieval","LEMBNeedleRetrieval", "LEMBPasskeyRetrieval"])
 
     parser.add_argument("--encode_max_length", type=int, default=None)
     parser.add_argument("--group_size_1", type=int, default=8)
