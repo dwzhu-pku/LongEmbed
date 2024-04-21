@@ -67,7 +67,7 @@ pip install -r requirements.txt
 ```
 
 ### Loading Data
-LongEmbed contains six datasets: NarrativeQA, QMSum, 2WikiMultihopQA, SummScreenFD, Passkey, and Needle. Each dataset has three splits: corpus, queries, and qrels. The `corpus.jsonl` file contains the documents, the `queries.jsonl` file contains the queries, and the `qrels.jsonl` file describes the relevance. To spefic split of load each dataset, you may use:
+LongEmbed contains six datasets: NarrativeQA, QMSum, 2WikiMultihopQA, SummScreenFD, Passkey, and Needle. Each dataset has three splits: corpus, queries, and qrels. The `corpus.jsonl` file contains the documents, the `queries.jsonl` file contains the queries, and the `qrels.jsonl` file describes the relevance. To specific split of load each dataset, you may use:
 
 ```python
 from datasets import load_dataset
