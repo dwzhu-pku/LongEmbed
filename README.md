@@ -120,5 +120,11 @@ Our code snippet for evaluation can be found in `src/test_long_embed.py`. You ma
 If you find this repo helpful, please cite our paper as follows:
 
 ```bibtex
+@article{zhu2024longembed,
+  title={LongEmbed: Extending Embedding Models for Long Context Retrieval},
+  author={Zhu, Dawei and Wang, Liang and Yang, Nan and Song, Yifan and Wu, Wenhao and Wei, Furu and Li, Sujian},
+  journal={arXiv preprint arXiv:2404.12096},
+  year={2024}
+}
 ```
 
