@@ -124,7 +124,7 @@ class RetrievalModel(DRESModel):
         if self.prefix_type == 'query_or_passage':
             input_texts = ['passage: {}'.format(t) for t in input_texts]
         elif self.prefix_type == 'nomic':
-            input_texts = ['nomic: {}'.format(t) for t in input_texts]
+            input_texts = ['search_document: {}'.format(t) for t in input_texts]
         # doing nothing for bge, none, instruction models
 
         encoded_embeds: np.ndarray = self._do_encode(input_texts, batch_size)
