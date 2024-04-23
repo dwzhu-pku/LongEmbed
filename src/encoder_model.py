@@ -50,8 +50,13 @@ class RetrievalModel(DRESModel):
                 config._attn_implementation = "flash_attention_2"
                 config.use_cache = False
                 config.sliding_window=None
+
+        model_kwargs = {}
+        # needed for nomic dynamic ntk rope scaling
+        if args.rotary_scaling_factor:
+            model_kwargs["rotary_scaling_factor"] = args.rotary_scaling_factor
         
-        self.encoder = AutoModel.from_pretrained(args.model_name_or_path, torch_dtype=torch.float16 if args.use_fp16 else torch.float32, config=config, ignore_mismatched_sizes=False, trust_remote_code=True)
+        self.encoder = AutoModel.from_pretrained(args.model_name_or_path, torch_dtype=torch.float16 if args.use_fp16 else torch.float32, config=config, ignore_mismatched_sizes=False, trust_remote_code=True, **model_kwargs)
             
         self.tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
         

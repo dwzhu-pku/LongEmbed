@@ -307,6 +307,7 @@ def get_args(input_args: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--no_l2_norm", action="store_true", default=False)
     parser.add_argument("--use_xformers", action="store_true", default=False)
     parser.add_argument("--use_self_extend", action="store_true", default=False)
+    parser.add_argument("--rotary_scaling_factor", type=int, default=None)
 
     args = parser.parse_args(input_args)
 
