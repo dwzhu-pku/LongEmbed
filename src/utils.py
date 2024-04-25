@@ -302,12 +302,12 @@ def get_args(input_args: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument('--window_length_list', type=int, nargs='+', default=[])
     parser.add_argument("--rope_theta", type=int, default=10000)
+    parser.add_argument("--rotary_scaling_factor", type=int, default=None)
 
     parser.add_argument("--use_fp16", action="store_true", default=False)
     parser.add_argument("--no_l2_norm", action="store_true", default=False)
     parser.add_argument("--use_xformers", action="store_true", default=False)
     parser.add_argument("--use_self_extend", action="store_true", default=False)
-    parser.add_argument("--rotary_scaling_factor", type=int, default=None)
 
     args = parser.parse_args(input_args)
 

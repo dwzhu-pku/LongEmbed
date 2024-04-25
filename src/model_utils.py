@@ -175,7 +175,7 @@ def replace_with_xformers():
         return (attn_output,)
 
     BertSelfAttention.forward = custom_bert_attn_forward
-    print('Replacing bert attention with xformers attention')
+    logger.info('Replacing bert attention with xformers attention')
 
 
 def use_self_extend(args, loaded_model):

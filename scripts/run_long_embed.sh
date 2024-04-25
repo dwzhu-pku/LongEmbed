@@ -13,7 +13,7 @@ fi
 task_list=("LEMBSummScreenFDRetrieval" "LEMBQMSumRetrieval" "LEMBWikimQARetrieval" "LEMBNarrativeQARetrieval" "LEMBNeedleRetrieval" "LEMBPasskeyRetrieval")
 
 export CHUNKING_MODE="no_chunk"
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2
 
 unset RANK
 
@@ -66,8 +66,8 @@ elif [ $model_type = "e5rope_se" ]; then
         --task_list "${task_list[@]}" \
         --encode_max_length ${encode_max_len} \
         --use_self_extend \
-        --group_size_1 17 \
-        --group_size_2 32 \
+        --group_size_1 9 \
+        --group_size_2 64 \
 
 elif [ $model_type = "group" ]; then
 
@@ -128,6 +128,46 @@ elif [ $model_type = "pcw" ]; then
         --encode_max_length ${encode_max_len} \
         --chunk_mode "token" \
 
+# for nomic
+elif [ $model_type = "nomic" ]; then
+
+    python ${debug_mode} src/test_long_embed.py \
+        --model_name_or_path ${model_name_or_path} \
+        --output_dir ./results/ \
+        --window_length_list 256 512 1024 2048 4096 8192 16384 32768 \
+        --batch_size 8 \
+        --use_fp16 \
+        --task_list "${task_list[@]}" \
+        --encode_max_length 8192 \
+        --rotary_scaling_factor 16
+
+# for bge-m3
+elif [ $model_type = "bge-m3" ]; then
+
+    python ${debug_mode} src/test_long_embed.py \
+        --model_name_or_path ${model_name_or_path} \
+        --output_dir ./results/ \
+        --window_length_list 256 512 1024 2048 4096 8192 16384 32768 \
+        --batch_size 4 \
+        --use_fp16 \
+        --use_xformers \
+        --task_list "${task_list[@]}" \
+        --encode_max_length 8192 \
+
+# for e5_mistral
+elif [ $model_type = "mistral" ]; then
+
+    python ${debug_mode} src/test_long_embed.py \
+        --model_name_or_path ${model_name_or_path} \
+        --output_dir ./results/ \
+        --window_length_list 256 512 1024 2048 4096 8192 16384 32768 \
+        --batch_size 8 \
+        --use_fp16 \
+        --use_xformers \
+        --task_list "${task_list[@]}" \
+        --encode_max_length 4096 \
+
+# for others
 elif [ $model_type = "default" ]; then
 
     python ${debug_mode} src/test_long_embed.py \
@@ -138,8 +178,7 @@ elif [ $model_type = "default" ]; then
         --use_fp16 \
         --use_xformers \
         --task_list "${task_list[@]}" \
-        # --encode_max_length ${encode_max_len} \
 
 else
-    echo "using default mode for other cases"
+    echo "Invalid model type: ${model_type}"
 fi
