@@ -5,10 +5,10 @@
 <div align="center">Dawei Zhu, Liang Wang, Nan Yang, Yifan Song, Wenhao Wu, Furu Wei, Sujian Li
 <br><br>
 
-[Please see full details in our pre-print](assets/LongEmbed_v0417.pdf)
+[Please see full details in our pre-print](https://arxiv.org/abs/2404.12096)
 </div> 
 <div align="center">
-<a href=""><img src="assets/paper-page-xl.svg" alt="Paper page on HF"></a>
+<a href="https://huggingface.co/papers/2404.12096"><img src="assets/paper-page-xl.svg" alt="Paper page on HF"></a>
 <a href="https://huggingface.co/datasets/dwzhu/LongEmbed"><img src="assets/dataset-on-hf-xl.svg" alt="Dataset on HF"></a>
 <a href="https://huggingface.co/dwzhu/e5rope-base"><img src="assets/model-on-hf-xl.svg" alt="Model on HF"></a>
 </div>
